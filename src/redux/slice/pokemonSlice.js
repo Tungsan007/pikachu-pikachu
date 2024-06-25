@@ -18,26 +18,29 @@ const pokeArrayDefault = localStorage.getItem("pokeArray")
   };
 export const pokemonSlice = createSlice({
    name: 'pokemon',
-   initialState: pokeArrayDefault,
+   initialState: {
+      pokeArray: pokeArrayDefault,
+      isLoading: false
+   },
    reducers: {
-      create: (state, action) => {
-         localStorage.setItem("pokeArray", JSON.stringify(action.payload));
-         return { pokeArray: action.payload };
+      //CREATE
+      createPokemon: (state) => {
+        state.isLoading = true
       },
-      ///////////////////////////////
+      createPokemonSuccess: (state, action) => {
+        localStorage.setItem("pokeArray", JSON.stringify(action.payload));
+        state.pokeArray = action.payload
+        state.isLoading = false
+      },
+      createPokemonFailure: (state) => {
+        state.isLoading = false
+      },
+      //SELECT
+      setSelect: () => {
+        //Trigger saga
+      },
       setSelectPokemon: (state, action) => {
-         const newSelectArr = state.pokeArray.map((row) => {
-            return row.map((cell) => {
-              if (
-                cell.row === action.payload.row &&
-                cell.col === action.payload.col
-              ) {
-                return { ...cell, status: 1 };
-              }
-              return cell;
-            });
-          });
-         return { pokeArray: newSelectArr };
+         state.pokeArray = action.payload
       },
       /////////////////////////////////////////
       update: (state, action) => {
@@ -124,5 +127,5 @@ export const pokemonSlice = createSlice({
    }
 })
 
-export const { create, setSelectPokemon, update, unSelect, shuffle } = pokemonSlice.actions
+export const { createPokemon, createPokemonFailure, createPokemonSuccess, setSelect, setSelectPokemon, update, unSelect, shuffle } = pokemonSlice.actions
 export default pokemonSlice.reducer

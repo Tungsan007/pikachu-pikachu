@@ -10,18 +10,22 @@ const useCheckHandler = () => {
    const { checkPath, resetValidPath } = Algorithm()
    const matrix = useSelector((state) => state.pokemon.pokeArray)
    const dispatch = useDispatch()
+   const { latestPath } = Algorithm()
+   console.log(latestPath)
 
 
 
-   const checkHandler = useCallback(() => {
+    return useCallback(() => {
+      console.log("CHAY VAO HANDLEER")
       if (selectPokemon.length === 2) {
+        console.log('trongg if')
         //kiem tra img co giong nhau?
         if (selectPokemon[0].data.img === selectPokemon[1].data.img) {
           //kiem tra tinh hop le cua duong di
           const isValid = checkPath(matrix, selectPokemon[0], selectPokemon[1]);
   
           if (isValid) {
-            // console.log("duong di hop le");
+            console.log("duong di hop le");
             dispatch(update({ row: selectPokemon[0].row, col: selectPokemon[0].col }));
             dispatch(update({ row: selectPokemon[1].row, col: selectPokemon[1].col }));
             resetValidPath();
@@ -44,7 +48,8 @@ const useCheckHandler = () => {
       // const isVali = useCheck(pokeChoose)
     }, [selectPokemon, dispatch, matrix, checkPath, resetValidPath]);
 
-    return checkHandler;
+    // return checkHandler;
 }
 
 export default useCheckHandler;
+

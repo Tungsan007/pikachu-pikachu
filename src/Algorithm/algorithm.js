@@ -9,7 +9,7 @@ const Algorithm = () => {
   //them vao store:
   const addStore = (path) => {
     store.unshift(path);
-    console.log(store)
+    // console.log(path)
   };
 
   //reset latestPath

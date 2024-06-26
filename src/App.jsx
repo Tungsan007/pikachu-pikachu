@@ -1,19 +1,48 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { createPokemon, setSelect, shuffle, unSelect } from "./redux/slice/pokemonSlice";
+import { createPokemon, setSelect, shuffle, unSelect, update } from "./redux/slice/pokemonSlice";
 import { addSelectPokemon, removeSelectPokemon } from "./redux/slice/selectPokemonSlice";
 import Algorithm from "./Algorithm/algorithm";
 import ModalUI from "./antd/ModalUL";
-import useCheckHandler from "./hooks/useCheckHandler";
+
 
 function App() {
   const matrix = useSelector((state) => state.pokemon.pokeArray)
   const selectPokemon = useSelector((state) => state.selectPokemon.selectPokemon)
   const dispatch = useDispatch()
-  const { latestPath, resetLatestPathHandler } = Algorithm()
+  const { latestPath, checkPath, resetValidPath,resetLatestPathHandler } = Algorithm()
   const [ reGame, setReGame ] = useState(false)
-  const checkHandler = useCheckHandler();
   
+  const checkHandler = useCallback(() => {
+    if (selectPokemon.length === 2) {
+      //kiem tra img co giong nhau?
+      if (selectPokemon[0].data.img === selectPokemon[1].data.img) {
+        //kiem tra tinh hop le cua duong di
+        const isValid = checkPath(matrix, selectPokemon[0], selectPokemon[1]);
+
+        if (isValid) {
+          console.log("duong di hop le");
+          dispatch(update({ row: selectPokemon[0].row, col: selectPokemon[0].col }));
+          dispatch(update({ row: selectPokemon[1].row, col: selectPokemon[1].col }));
+          resetValidPath();
+        } else {
+          // console.log("duong di khong hop le");
+          // console.log("bo chon");
+          dispatch(unSelect(selectPokemon[0]));
+          dispatch(unSelect(selectPokemon[1]));
+        }
+      } else {
+        // img khong giong nhau
+        // console.log("bo chon");
+        dispatch(unSelect(selectPokemon[0]));
+        dispatch(unSelect(selectPokemon[1]));
+      }
+
+      // Xoa cac chosen poke:
+      dispatch(removeSelectPokemon());
+    }
+    // const isVali = useCheck(pokeChoose)
+  }, [selectPokemon, dispatch, matrix, checkPath, resetValidPath]);
   useEffect(() => {
     checkHandler();
   }, [selectPokemon, checkHandler]);
@@ -51,10 +80,9 @@ function App() {
     //chay shuffle
     dispatch(shuffle());
   };
-
+  // console.log(latestPath)
   const checkPathNode = (row, col) => {
     const filterArr = latestPath.filter((i) => i.row === row && i.col === col);
-
     //TH diem can xet co trong latestPath Array:
     if (filterArr.length > 0) {
       return true;
@@ -62,7 +90,6 @@ function App() {
 
     return false;
   };
-
 
   useEffect(() => {
     if (latestPath.length > 0) {
@@ -74,7 +101,6 @@ function App() {
       return () => clearTimeout(timer);
     }
   }, [latestPath, resetLatestPathHandler]);
-
   return (
     <>
       <div className="btn-container">

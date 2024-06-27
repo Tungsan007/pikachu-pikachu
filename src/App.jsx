@@ -75,7 +75,7 @@ function App() {
       dispatch(unSelect(selectPokemon[0]));
     }
 
-    dispatch(removeSelectPokemon);
+    dispatch(removeSelectPokemon());
 
     //chay shuffle
     dispatch(shuffle());

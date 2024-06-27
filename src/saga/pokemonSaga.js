@@ -2,7 +2,7 @@ import { all, put, takeEvery, select } from 'redux-saga/effects'
 import { pokeData } from '../data/data';
 import { createPokemonSuccess, setSelectPokemon, shuffleSuccess, unSelectSuccess, updateSuccess } from '../redux/slice/pokemonSlice';
 
-const shuffleArr = (array) => {
+const shuffleArray = (array) => {
    let currentIndex = array.length;
    while (currentIndex !== 0) {
      let randomIndex = Math.floor(Math.random() * currentIndex);
@@ -22,7 +22,7 @@ function* createPokemon() {
       const B = [];
 
       const data = pokeData.concat(pokeData);
-      shuffleArr(data);
+      shuffleArray(data);
 
          //tao 1 mang 10*10
          for (let i = 0; i < 10; i++) {
@@ -122,7 +122,7 @@ function* handleShuffle() {
         }
       }
       //xao tron
-      shuffleArr(insideArr);
+      shuffleArray(insideArr);
 
       //Tao 1 mang 12*12 de tao duong bao quanh insideArr
       const shuffleArr = [];
